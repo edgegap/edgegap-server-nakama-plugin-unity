@@ -29,7 +29,7 @@ namespace Edgegap.NakamaServersPlugin
         internal bool InstanceReady;
         internal double UpdatedAt;
         internal bool PendingConnectionsUpdate;
-        internal bool OngoingConncectionsUpdate;
+        internal bool OngoingConnectionsUpdate;
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace Edgegap.NakamaServersPlugin
             InstanceReady = false;
             UpdatedAt = Time.fixedUnscaledTimeAsDouble;
             PendingConnectionsUpdate = false;
-            OngoingConncectionsUpdate = false;
+            OngoingConnectionsUpdate = false;
         }
 
         public void Initialize()
@@ -145,12 +145,14 @@ namespace Edgegap.NakamaServersPlugin
         {
             if (
                 !PendingConnectionsUpdate
-                || OngoingConncectionsUpdate
+                || OngoingConnectionsUpdate
                 || Time.fixedUnscaledTimeAsDouble - UpdatedAt < ConnectionUpdateFrequencySeconds
             )
             {
                 return;
             }
+            PendingConnectionsUpdate = false;
+            OngoingConnectionsUpdate = true;
 
             ConnectionEventDTO connectionEvent = new ConnectionEventDTO(
                 InstanceMetadata.DeploymentID,
@@ -162,6 +164,7 @@ namespace Edgegap.NakamaServersPlugin
                 (ConnectionEventResponseDTO res, UnityWebRequest req) =>
                 {
                     L._Log($"Connection Event processed by Nakama. '{connectionEvent}'");
+                    OngoingConnectionsUpdate = false;
                 },
                 (string err, UnityWebRequest req) =>
                 {
