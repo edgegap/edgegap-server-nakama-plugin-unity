@@ -21,9 +21,6 @@ namespace Edgegap.NakamaServersPlugin
 
         public double ConnectionUpdateFrequencySeconds;
         public int RequestTimeoutSeconds;
-
-        public bool LogInstanceEvents;
-        public bool LogConnectionEvents;
         #endregion
 
         #region ServerAgent State
@@ -42,7 +39,6 @@ namespace Edgegap.NakamaServersPlugin
             string authToken,
             double connectionUpdateFrequencySeconds = 1,
             int requestTimeoutSeconds = 5,
-            bool logInstanceEvents = true,
             bool logConnectionEvents = false,
             IM instanceMetadata = null
         )
@@ -57,8 +53,6 @@ namespace Edgegap.NakamaServersPlugin
             AuthToken = authToken;
             ConnectionUpdateFrequencySeconds = connectionUpdateFrequencySeconds;
             RequestTimeoutSeconds = requestTimeoutSeconds;
-            LogInstanceEvents = logInstanceEvents;
-            LogConnectionEvents = logConnectionEvents;
 
             InstanceMetadata = (IM)(
                 instanceMetadata is null ? new InstanceBaseMetadata() : instanceMetadata
