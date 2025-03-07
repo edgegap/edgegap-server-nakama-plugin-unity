@@ -1,8 +1,8 @@
-# Edgegap Unity Gen2 SDK
+# Edgegap Server Nakama Plugin
 
 This plugin has been tested, and supports Unity versions 2021.3.0f1+, including all LTS releases, and Unity 6.
 
-This plugin is intended to simplify integration of Gen2 Matchmaking through pre-defined set of SDK methods and example client & server runtime handler scripts.
+This plugin simplifies integration of Nakama Game Services for deploying and managing Dedicated Servers on Edgegap.
 
 ## Install With Git (recommended)
 
@@ -48,20 +48,22 @@ This is the only official distribution channel for this SDK, do not trust unveri
 
 ## Plugin Usage
 
-Follow our [Getting Started guide](/404) first, then explore our [Matchmaking Scenarios](/404) for inspiration.
+@todo
 
 ### Import Simple Example
 
+@todo
+
 1. Find this package in Unity Package Manager window.
 2. Open the `Samples` tab.
-3. Click on **Import** next to **Gen2 Simple Example**.
+3. Click on **Import** next to **Simple Example**.
 4. Locate sample files in your project `Assets/Samples/Edgegap Gen2 SDK/{version}/Simple Example`.
 5. Create an Empty GameObject in your scene and attach `Gen2ClientHandlerExample.cs` script.
 6. Configure Gen2 `BaseUrl` and `AuthToken` values from dashboard.
 
 ### Usage Requirements
 
-To take full advantage of our Unity Gen2 service, you will need to [Create an Edgegap Free Tier account](https://app.edgegap.com/auth/register). Our Free Tier let's you test and explore all of Gen2 features for free, no credit card required!
+To take full advantage of our hosting service, you will need to [Create an Edgegap Free Tier account](https://app.edgegap.com/auth/register).
 
 ### Troubleshooting
 
@@ -69,27 +71,6 @@ To take full advantage of our Unity Gen2 service, you will need to [Create an Ed
 1. In your Unity Editor, navigate to **Edit / Preferences / External Tools / Generate .csproj files**.
 2. Make sure you have enabled **Git packages**.
 3. Click **Regenerate project files**.
-
-## Update the Plugin in Unity
-
-Before updating, take note of your `Client Version` property on `Gen2Client.cs` to ensure future compatibility.
-
-Depending on your installation method:
-
-- If you installed with git, locate it in Unity's **Package Manager** window and click **Update**. Wait for the process to complete and you're good to go!
-- If you installed via ZIP archive, you will need to remove the previous copy, then download the new version.
-
-### Migrating Scenes
-
-1. **Replace any missing scripts in your scenes!**
-
-   - Verify validity of your `Gen2Client.cs` properties like `BaseUrl` and `AuthToken`.
-
-2. **Increase `Client Version` property value of your `Gen2Client.cs` script!**
-
-   - This will prevent loading outdated tickets from cache when matchmaking resumed.
-
-3. You may want to modify your client & server handler scripts.
 
 ## For Plugin Developers
 
