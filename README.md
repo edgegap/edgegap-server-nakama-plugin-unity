@@ -2,7 +2,7 @@
 
 This plugin has been tested, and supports Unity versions 2021.3.0f1+, including all LTS releases, and Unity 6.
 
-This plugin simplifies integration of Nakama Game Services for deploying and managing Dedicated Servers on Edgegap.
+[Simplify integration of Nakama Game Services for deploying and managing Dedicated Servers on Edgegap.](https://github.com/edgegap/nakama-edgegap)
 
 ## Install With Git (recommended)
 
