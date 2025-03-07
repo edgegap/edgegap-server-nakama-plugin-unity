@@ -1,0 +1,20 @@
+{
+  "name": "com.edgegap.server-nakama-plugin",
+  "version": "1.0.0",
+  "displayName": "Edgegap Server Nakama Plugin",
+  "description": "Integrate Dedicated Servers on Edgegap with Nakama Game Services.",
+  "unity": "2021.3",
+  "unityRelease": "0f1",
+  "documentationUrl": "https://github.com/edgegap/edgegap-server-nakama-plugin",
+  "hideInEditor": false,
+  "changelogUrl": "https://github.com/edgegap/edgegap-server-nakama-plugin/releases",
+  "licensesUrl": "https://choosealicense.com/licenses/mit/",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
+  "author": {
+    "name": "Edgegap Technologies",
+    "email": "contact@edgegap.com",
+    "url": "https://www.edgegap.com"
+  }
+}
