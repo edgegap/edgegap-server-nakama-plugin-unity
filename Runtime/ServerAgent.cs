@@ -40,7 +40,7 @@ namespace Edgegap.NakamaServersPlugin
             MonoBehaviour handler,
             string baseUrl,
             string authToken,
-            int connectionUpdateFrequencySeconds = 1,
+            double connectionUpdateFrequencySeconds = 1,
             int requestTimeoutSeconds = 5,
             bool logInstanceEvents = true,
             bool logConnectionEvents = false,
