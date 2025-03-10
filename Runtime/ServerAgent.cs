@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -15,16 +16,16 @@ namespace Edgegap.NakamaServersPlugin
         public MonoBehaviour Handler;
 
         #region ServerAgent Configuration
-        // BaseUrl may only be set with constructor
-        public string BaseUrl { get; }
         public string AuthToken { private get; set; }
+        internal string UrlConnectionEvent { get; }
+        internal string UrlInstanceEvent { get; }
+        public IM InstanceMetadata { get; }
 
         public double ConnectionUpdateFrequencySeconds;
         public int RequestTimeoutSeconds;
         #endregion
 
         #region ServerAgent State
-        public IM InstanceMetadata;
         public List<string> UserIDs { get; private set; }
         internal bool InstanceReady;
         internal double UpdatedAt;
@@ -35,12 +36,12 @@ namespace Edgegap.NakamaServersPlugin
 
         public ServerAgent(
             MonoBehaviour handler,
-            string baseUrl,
             string authToken,
+            string urlConnectionEvent = null,
+            string urlInstanceEvent = null,
+            IM instanceMetadata = null,
             double connectionUpdateFrequencySeconds = 1,
-            int requestTimeoutSeconds = 5,
-            bool logConnectionEvents = false,
-            IM instanceMetadata = null
+            int requestTimeoutSeconds = 5
         )
         {
             if (handler is null)
@@ -49,14 +50,23 @@ namespace Edgegap.NakamaServersPlugin
             }
 
             Handler = handler;
-            BaseUrl = baseUrl;
             AuthToken = authToken;
+            UrlConnectionEvent = urlConnectionEvent is null
+                ? Environment.GetEnvironmentVariable("NAKAMA_CONNECTION_EVENT_URL")
+                : urlConnectionEvent;
+            UrlInstanceEvent = urlInstanceEvent is null
+                ? Environment.GetEnvironmentVariable("NAKAMA_INSTANCE_EVENT_URL")
+                : urlInstanceEvent;
+            ;
+            InstanceMetadata = instanceMetadata is null
+                ? (IM)
+                    JsonConvert.DeserializeObject<InstanceBaseMetadata>(
+                        Environment.GetEnvironmentVariable("NAKAMA_INSTANCE_METADATA")
+                    )
+                : instanceMetadata;
+            ;
             ConnectionUpdateFrequencySeconds = connectionUpdateFrequencySeconds;
             RequestTimeoutSeconds = requestTimeoutSeconds;
-
-            InstanceMetadata = (IM)(
-                instanceMetadata is null ? new InstanceBaseMetadata() : instanceMetadata
-            );
 
             L._Log($"Initialized with Instance Metadata '{InstanceMetadata}'");
 
@@ -69,12 +79,7 @@ namespace Edgegap.NakamaServersPlugin
 
         public void Initialize()
         {
-            if (string.IsNullOrEmpty(BaseUrl.Trim()))
-            {
-                throw new Exception("BaseUrl not declared.");
-            }
-
-            NakamaApi = new Api<IM>(Handler, AuthToken, BaseUrl);
+            NakamaApi = new Api<IM>(Handler, AuthToken, UrlConnectionEvent, UrlInstanceEvent);
 
             InstanceEventDTO<IM> instanceEvent = new InstanceEventDTO<IM>(
                 InstanceMetadata.DeploymentID,

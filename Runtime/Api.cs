@@ -13,36 +13,41 @@ namespace Edgegap.NakamaServersPlugin
         where IM : InstanceBaseMetadata
     {
         internal MonoBehaviour Parent;
-        internal string BaseUrl;
         internal string AuthToken;
+        internal string UrlConnectionEvent;
+        internal string UrlInstanceEvent;
 
         internal int RequestTimeoutSeconds;
         internal Func<float> BackoffSeconds = () => 1 + (0.1f * Random.value);
 
-        internal string PATH_CONNECTION_EVENT = "connection";
-        internal string PATH_INSTANCE_EVENT = "instance";
-
         public Api(
             MonoBehaviour parent,
             string authToken,
-            string baseUrl,
+            string urlConnectionEvent,
+            string urlInstanceEvent,
             int requestTimeoutSeconds = 3
         )
         {
+            Parent = parent;
             AuthToken = authToken;
-            BaseUrl = baseUrl;
+            UrlConnectionEvent = urlConnectionEvent;
+            UrlInstanceEvent = urlInstanceEvent;
+            RequestTimeoutSeconds = requestTimeoutSeconds;
         }
 
         public Api(
             MonoBehaviour parent,
             string authToken,
-            string baseUrl,
+            string urlConnectionEvent,
+            string urlInstanceEvent,
             Func<float> backoffSeconds,
             int requestTimeoutSeconds = 3
         )
         {
+            Parent = parent;
             AuthToken = authToken;
-            BaseUrl = baseUrl;
+            UrlConnectionEvent = urlConnectionEvent;
+            UrlInstanceEvent = urlInstanceEvent;
             RequestTimeoutSeconds = requestTimeoutSeconds;
             BackoffSeconds = backoffSeconds;
         }
@@ -54,7 +59,7 @@ namespace Edgegap.NakamaServersPlugin
         )
         {
             Post(
-                $"{BaseUrl}/{PATH_INSTANCE_EVENT}",
+                UrlInstanceEvent,
                 JsonConvert.SerializeObject(instanceEvent),
                 (string response, UnityWebRequest request) =>
                 {
@@ -81,7 +86,7 @@ namespace Edgegap.NakamaServersPlugin
         )
         {
             Post(
-                $"{BaseUrl}/{PATH_CONNECTION_EVENT}",
+                UrlConnectionEvent,
                 JsonConvert.SerializeObject(connectionEvent),
                 (string response, UnityWebRequest request) =>
                 {
