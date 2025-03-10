@@ -8,7 +8,7 @@ This plugin has been tested, and supports Unity versions 2021.3.0f1+, including 
 
 ### Benefits
 
-- Installing our plugin this way will ensure you get the freshest updates the moment they come out, see [the update guide](#update-the-plugin-in-unity).
+- Avoid Unity Package Manager caching bugs when updating your plugin.
 
 ### Caveats
 
@@ -30,7 +30,7 @@ This plugin has been tested, and supports Unity versions 2021.3.0f1+, including 
 
 ### Caveats
 
-- Installing our plugin this way will require you to manually replace plugin contents if you [wish to update it](#update-the-plugin-in-unity),
+- Installing our plugin this way will require you to manually replace plugin contents and wipe local cache if you wish to update it,
 - The newtonsoft package (dependency) version required may not be compatible with your project if you're already using an older version of this package.
 
 ### Instructions
