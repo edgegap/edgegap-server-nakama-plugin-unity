@@ -19,7 +19,7 @@ This plugin has been tested, and supports Unity versions 2021.3.0f1+, including 
 1. Open your Unity project,
 2. Select toolbar option **Window** -> **Package Manager**,
 3. Click the **+** icon and select **Add package from git URL...**,
-4. Input the following URL `https://github.com/edgegap/edgegap-unity-gen2-sdk.git`,
+4. Input the following URL `https://github.com/edgegap/edgegap-server-nakama-plugin.git`,
 5. Click **Add** and wait for the Unity Package Manager to complete the installation.
 
 ## Install via ZIP archive
@@ -52,14 +52,12 @@ This is the only official distribution channel for this SDK, do not trust unveri
 
 ### Import Simple Example
 
-@todo
-
 1. Find this package in Unity Package Manager window.
 2. Open the `Samples` tab.
-3. Click on **Import** next to **Simple Example**.
-4. Locate sample files in your project `Assets/Samples/Edgegap Gen2 SDK/{version}/Simple Example`.
-5. Create an Empty GameObject in your scene and attach `Gen2ClientHandlerExample.cs` script.
-6. Configure Gen2 `BaseUrl` and `AuthToken` values from dashboard.
+3. Click on **Import** next to **Simple Handler Example**.
+4. Locate sample files in your project `Assets/Samples/Edgegap Server Nakama Plugin/{version}/Simple Handler Example`.
+5. Create an Empty GameObject in your scene and attach `SimpleHandlerExample.cs` script.
+6. optional: configure `Authentication Token` values Inspector UI.
 
 ### Usage Requirements
 
@@ -68,6 +66,7 @@ To take full advantage of our hosting service, you will need to [Create an Edgeg
 ### Troubleshooting
 
 > Visual Studio shows `type or namespace name could not be found` for Edgegap namespace.
+
 1. In your Unity Editor, navigate to **Edit / Preferences / External Tools / Generate .csproj files**.
 2. Make sure you have enabled **Git packages**.
 3. Click **Regenerate project files**.
