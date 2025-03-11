@@ -13,7 +13,7 @@ namespace Edgegap.NakamaServersPlugin
     {
         private Api<IM> NakamaApi;
 
-        public MonoBehaviour Handler;
+        public ServerHandler<IM> Handler;
 
         #region ServerAgent Configuration
         public string AuthToken { private get; set; }
@@ -35,7 +35,7 @@ namespace Edgegap.NakamaServersPlugin
         #endregion
 
         public ServerAgent(
-            MonoBehaviour handler,
+            ServerHandler<IM> handler,
             string authToken,
             string urlConnectionEvent = null,
             string urlInstanceEvent = null,
@@ -51,30 +51,48 @@ namespace Edgegap.NakamaServersPlugin
 
             Handler = handler;
             AuthToken = authToken;
-            UrlConnectionEvent = urlConnectionEvent is null
-                ? Environment.GetEnvironmentVariable("NAKAMA_CONNECTION_EVENT_URL")
-                : urlConnectionEvent;
-            UrlInstanceEvent = urlInstanceEvent is null
-                ? Environment.GetEnvironmentVariable("NAKAMA_INSTANCE_EVENT_URL")
-                : urlInstanceEvent;
-            ;
-            InstanceMetadata = instanceMetadata is null
-                ? (IM)
-                    JsonConvert.DeserializeObject<InstanceBaseMetadata>(
-                        Environment.GetEnvironmentVariable("NAKAMA_INSTANCE_METADATA")
-                    )
-                : instanceMetadata;
-            ;
+            UrlConnectionEvent =
+                urlConnectionEvent ?? GetEnvVariable("NAKAMA_CONNECTION_EVENT_URL");
+            UrlInstanceEvent = urlInstanceEvent ?? GetEnvVariable("NAKAMA_INSTANCE_EVENT_URL");
+
+            string metadata = GetEnvVariable("NAKAMA_INSTANCE_METADATA", false);
+
+            InstanceMetadata =
+                instanceMetadata
+                ?? (
+                    string.IsNullOrEmpty(metadata)
+                        ? (IM)(new InstanceBaseMetadata())
+                        : JsonConvert.DeserializeObject<IM>(
+                            GetEnvVariable("NAKAMA_INSTANCE_METADATA")
+                        )
+                );
+            if (InstanceMetadata is null)
+            {
+                L._Warn("Starting with null (missing) Instance Metadata.");
+            }
+            else
+            {
+                L._Log($"Starting with Instance Metadata '{InstanceMetadata}'");
+            }
+
             ConnectionUpdateFrequencySeconds = connectionUpdateFrequencySeconds;
             RequestTimeoutSeconds = requestTimeoutSeconds;
-
-            L._Log($"Initialized with Instance Metadata '{InstanceMetadata}'");
 
             UserIDs = new List<string>();
             InstanceReady = false;
             UpdatedAt = Time.fixedUnscaledTimeAsDouble;
             PendingConnectionsUpdate = false;
             OngoingConnectionsUpdate = false;
+        }
+
+        public string GetEnvVariable(string name, bool throwOnEmpty = true)
+        {
+            string value = Environment.GetEnvironmentVariable(name);
+            if (throwOnEmpty && string.IsNullOrEmpty(value))
+            {
+                throw new Exception($"Required environment variable '{name}' not initialized.");
+            }
+            return value;
         }
 
         public void Initialize()
@@ -93,10 +111,13 @@ namespace Edgegap.NakamaServersPlugin
                 (InstanceEventResponseDTO res, UnityWebRequest req) =>
                 {
                     InstanceReady = true;
+                    L._Log($"Instance Event processed by Nakama. '{instanceEvent}'");
+                    Handler.OnInstanceEvent(instanceEvent, res);
                 },
                 (string err, UnityWebRequest req) =>
                 {
                     L._Error($"Couldn't send Instance Event to Nakama. '{err}'");
+                    Handler.OnInstanceEvent(instanceEvent, null, err);
                 }
             );
         }
@@ -138,10 +159,12 @@ namespace Edgegap.NakamaServersPlugin
                 (InstanceEventResponseDTO res, UnityWebRequest req) =>
                 {
                     L._Log($"Instance Event processed by Nakama. '{instanceEvent}'");
+                    Handler.OnInstanceEvent(instanceEvent, res);
                 },
                 (string err, UnityWebRequest req) =>
                 {
                     L._Error($"Couldn't send Instance Event to Nakama. '{err}'");
+                    Handler.OnInstanceEvent(instanceEvent, null, err);
                 }
             );
         }
@@ -178,5 +201,14 @@ namespace Edgegap.NakamaServersPlugin
             );
         }
         #endregion
+    }
+
+    public abstract class ServerHandler<IM> : MonoBehaviour
+    {
+        public abstract void OnInstanceEvent(
+            InstanceEventDTO<IM> payload,
+            InstanceEventResponseDTO response,
+            string error = null
+        );
     }
 }

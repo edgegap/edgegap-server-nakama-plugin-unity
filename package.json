@@ -9,6 +9,13 @@
   "hideInEditor": false,
   "changelogUrl": "https://github.com/edgegap/edgegap-server-nakama-plugin/releases",
   "licensesUrl": "https://choosealicense.com/licenses/mit/",
+  "samples": [
+    {
+      "displayName": "Simple Handler Example",
+      "description": "Minimal Nakama Integration Example.",
+      "path": "Samples~/SimpleHandlerExample"
+    }
+  ],
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.1"
   },
