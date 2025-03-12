@@ -48,7 +48,9 @@ This is the only official distribution channel for this SDK, do not trust unveri
 
 ## Plugin Usage
 
-@todo
+### Usage Requirements
+
+To take full advantage of our hosting service, you will need to [Create an Edgegap Free Tier account](https://app.edgegap.com/auth/register).
 
 ### Import Simple Example
 
@@ -58,10 +60,6 @@ This is the only official distribution channel for this SDK, do not trust unveri
 4. Locate sample files in your project `Assets/Samples/Edgegap Server Nakama Plugin/{version}/Simple Handler Example`.
 5. Create an Empty GameObject in your scene and attach `SimpleHandlerExample.cs` script.
 6. optional: configure `Authentication Token` values Inspector UI.
-
-### Usage Requirements
-
-To take full advantage of our hosting service, you will need to [Create an Edgegap Free Tier account](https://app.edgegap.com/auth/register).
 
 ### Troubleshooting
 
