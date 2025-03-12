@@ -19,7 +19,7 @@ This plugin has been tested, and supports Unity versions 2021.3.0f1+, including 
 1. Open your Unity project,
 2. Select toolbar option **Window** -> **Package Manager**,
 3. Click the **+** icon and select **Add package from git URL...**,
-4. Input the following URL `https://github.com/edgegap/edgegap-server-nakama-plugin.git`,
+4. Input the following URL `https://github.com/edgegap/edgegap-server-nakama-plugin-unity.git`,
 5. Click **Add** and wait for the Unity Package Manager to complete the installation.
 
 ## Install via ZIP archive
