@@ -7,8 +7,6 @@ namespace Edgegap.NakamaServersPlugin
     {
         public static void _Log<T>(T message)
         {
-            if (!Debug.isDebugBuild)
-                return;
             Debug.Log(_FormatLog(message));
         }
 

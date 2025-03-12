@@ -16,7 +16,6 @@ namespace Edgegap.NakamaServersPlugin
         public ServerHandler<IM> Handler;
 
         #region ServerAgent Configuration
-        public string AuthToken { private get; set; }
         internal string UrlConnectionEvent { get; }
         internal string UrlInstanceEvent { get; }
         public IM InstanceMetadata { get; }
@@ -36,7 +35,6 @@ namespace Edgegap.NakamaServersPlugin
 
         public ServerAgent(
             ServerHandler<IM> handler,
-            string authToken,
             string urlConnectionEvent = null,
             string urlInstanceEvent = null,
             IM instanceMetadata = null,
@@ -50,7 +48,6 @@ namespace Edgegap.NakamaServersPlugin
             }
 
             Handler = handler;
-            AuthToken = authToken;
             UrlConnectionEvent =
                 urlConnectionEvent ?? GetEnvVariable("NAKAMA_CONNECTION_EVENT_URL");
             UrlInstanceEvent = urlInstanceEvent ?? GetEnvVariable("NAKAMA_INSTANCE_EVENT_URL");
@@ -90,17 +87,17 @@ namespace Edgegap.NakamaServersPlugin
             string value = Environment.GetEnvironmentVariable(name);
             if (throwOnEmpty && string.IsNullOrEmpty(value))
             {
-                throw new Exception($"Required environment variable '{name}' not initialized.");
+                throw new Exception($"Missing required environment variable '{name}'.");
             }
             return value;
         }
 
         public void Initialize()
         {
-            NakamaApi = new Api<IM>(Handler, AuthToken, UrlConnectionEvent, UrlInstanceEvent);
+            NakamaApi = new Api<IM>(Handler, UrlConnectionEvent, UrlInstanceEvent);
 
             InstanceEventDTO<IM> instanceEvent = new InstanceEventDTO<IM>(
-                InstanceMetadata.DeploymentID,
+                InstanceMetadata.GameServer.DeploymentID,
                 "READY",
                 "deployment is ready",
                 InstanceMetadata
@@ -108,7 +105,7 @@ namespace Edgegap.NakamaServersPlugin
             L._Log($"Sending Instance Event to Nakama. '{instanceEvent}'");
             NakamaApi.UpdateInstance(
                 instanceEvent,
-                (InstanceEventResponseDTO res, UnityWebRequest req) =>
+                (string res, UnityWebRequest req) =>
                 {
                     InstanceReady = true;
                     L._Log($"Instance Event processed by Nakama. '{instanceEvent}'");
@@ -148,7 +145,7 @@ namespace Edgegap.NakamaServersPlugin
         public void StopInstance(string message = "deployment stopped", string err = null)
         {
             InstanceEventDTO<IM> instanceEvent = new InstanceEventDTO<IM>(
-                InstanceMetadata.DeploymentID,
+                InstanceMetadata.GameServer.DeploymentID,
                 string.IsNullOrEmpty(err) ? "STOP" : "ERROR",
                 message,
                 InstanceMetadata
@@ -156,7 +153,7 @@ namespace Edgegap.NakamaServersPlugin
             L._Log($"Sending Instance Event to Nakama. {instanceEvent}");
             NakamaApi.UpdateInstance(
                 instanceEvent,
-                (InstanceEventResponseDTO res, UnityWebRequest req) =>
+                (string res, UnityWebRequest req) =>
                 {
                     L._Log($"Instance Event processed by Nakama. '{instanceEvent}'");
                     Handler.OnInstanceEvent(instanceEvent, res);
@@ -183,13 +180,13 @@ namespace Edgegap.NakamaServersPlugin
             OngoingConnectionsUpdate = true;
 
             ConnectionEventDTO connectionEvent = new ConnectionEventDTO(
-                InstanceMetadata.DeploymentID,
+                InstanceMetadata.GameServer.DeploymentID,
                 UserIDs
             );
             L._Log($"Sending Connection Event to Nakama. '{connectionEvent}'");
             NakamaApi.UpdateConnections(
                 connectionEvent,
-                (ConnectionEventResponseDTO res, UnityWebRequest req) =>
+                (string res, UnityWebRequest req) =>
                 {
                     L._Log($"Connection Event processed by Nakama. '{connectionEvent}'");
                     OngoingConnectionsUpdate = false;
@@ -197,6 +194,7 @@ namespace Edgegap.NakamaServersPlugin
                 (string err, UnityWebRequest req) =>
                 {
                     L._Error($"Couldn't send Connection Event to Nakama. '{err}'");
+                    OngoingConnectionsUpdate = false;
                 }
             );
         }
@@ -207,7 +205,7 @@ namespace Edgegap.NakamaServersPlugin
     {
         public abstract void OnInstanceEvent(
             InstanceEventDTO<IM> payload,
-            InstanceEventResponseDTO response,
+            string response,
             string error = null
         );
     }

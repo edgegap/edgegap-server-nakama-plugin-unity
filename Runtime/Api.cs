@@ -13,7 +13,6 @@ namespace Edgegap.NakamaServersPlugin
         where IM : InstanceBaseMetadata
     {
         internal MonoBehaviour Parent;
-        internal string AuthToken;
         internal string UrlConnectionEvent;
         internal string UrlInstanceEvent;
 
@@ -22,14 +21,12 @@ namespace Edgegap.NakamaServersPlugin
 
         public Api(
             MonoBehaviour parent,
-            string authToken,
             string urlConnectionEvent,
             string urlInstanceEvent,
             int requestTimeoutSeconds = 3
         )
         {
             Parent = parent;
-            AuthToken = authToken;
             UrlConnectionEvent = urlConnectionEvent;
             UrlInstanceEvent = urlInstanceEvent;
             RequestTimeoutSeconds = requestTimeoutSeconds;
@@ -37,7 +34,6 @@ namespace Edgegap.NakamaServersPlugin
 
         public Api(
             MonoBehaviour parent,
-            string authToken,
             string urlConnectionEvent,
             string urlInstanceEvent,
             Func<float> backoffSeconds,
@@ -45,7 +41,6 @@ namespace Edgegap.NakamaServersPlugin
         )
         {
             Parent = parent;
-            AuthToken = authToken;
             UrlConnectionEvent = urlConnectionEvent;
             UrlInstanceEvent = urlInstanceEvent;
             RequestTimeoutSeconds = requestTimeoutSeconds;
@@ -54,7 +49,7 @@ namespace Edgegap.NakamaServersPlugin
 
         public void UpdateInstance(
             InstanceEventDTO<IM> instanceEvent,
-            Action<InstanceEventResponseDTO, UnityWebRequest> onSuccessDelegate,
+            Action<string, UnityWebRequest> onSuccessDelegate,
             Action<string, UnityWebRequest> onErrorDelegate
         )
         {
@@ -63,17 +58,7 @@ namespace Edgegap.NakamaServersPlugin
                 JsonConvert.SerializeObject(instanceEvent),
                 (string response, UnityWebRequest request) =>
                 {
-                    try
-                    {
-                        InstanceEventResponseDTO result =
-                            JsonConvert.DeserializeObject<InstanceEventResponseDTO>(response);
-                        onSuccessDelegate(result, request);
-                    }
-                    catch (Exception e)
-                    {
-                        L._Error($"Couldn't parse Nakama Instance Event response. {e.Message}");
-                        throw;
-                    }
+                    onSuccessDelegate(response, request);
                 },
                 onErrorDelegate
             );
@@ -81,7 +66,7 @@ namespace Edgegap.NakamaServersPlugin
 
         public void UpdateConnections(
             ConnectionEventDTO connectionEvent,
-            Action<ConnectionEventResponseDTO, UnityWebRequest> onSuccessDelegate,
+            Action<string, UnityWebRequest> onSuccessDelegate,
             Action<string, UnityWebRequest> onErrorDelegate
         )
         {
@@ -90,17 +75,7 @@ namespace Edgegap.NakamaServersPlugin
                 JsonConvert.SerializeObject(connectionEvent),
                 (string response, UnityWebRequest request) =>
                 {
-                    try
-                    {
-                        ConnectionEventResponseDTO result =
-                            JsonConvert.DeserializeObject<ConnectionEventResponseDTO>(response);
-                        onSuccessDelegate(result, request);
-                    }
-                    catch (Exception e)
-                    {
-                        L._Error($"Couldn't parse Nakama Connection Event response. {e.Message}");
-                        throw;
-                    }
+                    onSuccessDelegate(response, request);
                 },
                 onErrorDelegate
             );
@@ -119,7 +94,6 @@ namespace Edgegap.NakamaServersPlugin
 #else
             UnityWebRequest request = UnityWebRequest.Post(Url, requestBody);
 #endif
-            request.SetRequestHeader("Authorization", AuthToken);
             request.SetRequestHeader("Content-Type", "application/json");
             request.timeout = RequestTimeoutSeconds;
 

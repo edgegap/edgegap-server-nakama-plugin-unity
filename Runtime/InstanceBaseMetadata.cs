@@ -6,6 +6,22 @@ namespace Edgegap.NakamaServersPlugin
 {
     public class InstanceBaseMetadata
     {
+        [JsonProperty("game_server")]
+        public GameServerMetadata GameServer;
+
+        public InstanceBaseMetadata()
+        {
+            GameServer = new GameServerMetadata();
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+    }
+
+    public class GameServerMetadata
+    {
         [JsonProperty("ARBITRIUM_REQUEST_ID")]
         public string DeploymentID;
 
@@ -19,17 +35,15 @@ namespace Edgegap.NakamaServersPlugin
         public LocationDTO Location;
 
         [JsonProperty("ARBITRIUM_PORTS_MAPPING")]
-        public Dictionary<string, PortMappingDTO> PortMapping;
+        public PortMappingEnvDTO PortMapping;
 
-        public InstanceBaseMetadata()
+        public GameServerMetadata()
         {
-            DeploymentID = TryDeserialize<string>("ARBITRIUM_REQUEST_ID");
-            PublicIP = TryDeserialize<string>("ARBITRIUM_PUBLIC_IP");
+            DeploymentID = Environment.GetEnvironmentVariable("ARBITRIUM_REQUEST_ID");
+            PublicIP = Environment.GetEnvironmentVariable("ARBITRIUM_PUBLIC_IP");
             Tags = TryDeserialize<List<string>>("ARBITRIUM_DEPLOYMENT_TAGS");
             Location = TryDeserialize<LocationDTO>("ARBITRIUM_DEPLOYMENT_LOCATION");
-            PortMapping = TryDeserialize<Dictionary<string, PortMappingDTO>>(
-                "ARBITRIUM_PORTS_MAPPING"
-            );
+            PortMapping = TryDeserialize<PortMappingEnvDTO>("ARBITRIUM_PORTS_MAPPING");
         }
 
         public static T TryDeserialize<T>(string key)
@@ -77,6 +91,12 @@ namespace Edgegap.NakamaServersPlugin
         {
             return JsonConvert.SerializeObject(this);
         }
+    }
+
+    public class PortMappingEnvDTO
+    {
+        [JsonProperty("ports")]
+        public Dictionary<string, PortMappingDTO> Ports;
     }
 
     public class PortMappingDTO
