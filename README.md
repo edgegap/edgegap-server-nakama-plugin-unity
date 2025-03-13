@@ -61,6 +61,8 @@ To take full advantage of our hosting service, you will need to [Create an Edgeg
 5. Create an Empty GameObject in your scene and attach `SimpleHandlerExample.cs` script.
 6. optional: configure `Authentication Token` values Inspector UI.
 
+Call methods `AddUser` and `RemoveUser` whenever a player connects or disconnects to manage allocations on Nakama.
+
 ### Troubleshooting
 
 > Visual Studio shows `type or namespace name could not be found` for Edgegap namespace.
