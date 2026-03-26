@@ -73,45 +73,7 @@ The following [Environment Variables](https://docs.edgegap.com/learn/orchestrati
 - `NAKAMA_INSTANCE_EVENT_URL` (url to send instance event actions)
 - `NAKAMA_INSTANCE_METADATA` (contains create metadata JSON)
 
-### Connection Events
-
-Using `NAKAMA_CONNECTION_EVENT_URL` you must send Player Connection events to the Nakama Instance with the following body:
-
-```json
-{
-  "instance_id": "<instance_id>",
-  "connections": [
-    "<user_id>"
-  ]
-}
-```
-
-`connections` is the list of active user IDs connected to the Dedicated Game Server. We recommend collecting updates
-over a short period of time (~5 seconds) and updating the full list of connections in a batch request. Contents of
-this request will overwrite any existing list of connections for the specified instance.
-
-### Instance Events
-
-Using `NAKAMA_INSTANCE_EVENT_URL` you must send Instance events to the Nakama Instance with the following body:
-
-```json
-{
-  "instance_id": "<instance_id>",
-  "action": "[READY|ERROR|STOP]",
-  "message": "",
-  "metadata": {}
-}
-```
-
-`action` must be one of the following:
-
-- `READY` will mark the instance as ready and trigger Nakama callback event to notify players,
-- `ERROR` will mark the instance in error and trigger Nakama callback event to notify players,
-- `STOP` will call Edgegap's API to stop the running deployment, which will be removed from Nakama once Edgegap confirms termination.
-
-`message` can be used optionally to provide extra Instance status information (e.g. to communicate Errors).
-
-`metadata` can be used optionally to merge additional custom key-value information available in Dedicated Game Server to the metadata of the Instance.
+Both Connection and Instance events are automated when using this SDK, assuming you integrated `AddUser` and `RemoveUser` methods in your code.
 
 ### Troubleshooting
 
